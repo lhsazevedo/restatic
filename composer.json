@@ -1,5 +1,5 @@
 {
-    "name": "jeremeamia/xstatic",
+    "name": "jeremeamia/restatic",
     "description": "Static interfaces without static pitfalls",
     "license": "MIT",
     "keywords": ["static", "static proxy", "proxy", "facade", "facades", "interface", "container", "service locator"],
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "XStatic\\": "src/"
+            "ReStatic\\": "src/"
         }
     }
 }

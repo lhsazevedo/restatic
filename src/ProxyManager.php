@@ -1,6 +1,6 @@
 <?php
 
-namespace XStatic;
+namespace ReStatic;
 
 use Psr\Container\ContainerInterface;
 
@@ -39,11 +39,11 @@ class ProxyManager
      * @param bool|string $rootNamespace The namespace that the alias should be created in
      *
      * @return bool
-     * @see \XStatic\AliasLoaderInterface::register()
+     * @see \ReStatic\AliasLoaderInterface::register()
      */
     public function enable($rootNamespace = self::ROOT_NAMESPACE_GLOBAL)
     {
-        // If XStatic is already enabled, this is a no-op
+        // If ReStatic is already enabled, this is a no-op
         if ($this->aliasLoader->isRegistered()) {
             return true;
         }

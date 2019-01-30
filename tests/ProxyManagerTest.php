@@ -1,22 +1,22 @@
 <?php
 
-namespace XStatic\Test;
+namespace ReStatic\Test;
 
-use XStatic\ProxyManager;
+use ReStatic\ProxyManager;
 
 /**
- * @covers \XStatic\ProxyManager
+ * @covers \ReStatic\ProxyManager
  */
 class ProxyManagerTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreateStaticProxies()
     {
-        // Instantiate XStatic and use setContainer
+        // Instantiate ReStatic and use setContainer
         $proxyManager = new ProxyManager($this->getMock('Psr\Container\ContainerInterface'));
         $proxyManager->setContainer(new Fixture\Container(array('queue' => new \SplQueue)));
 
         // Register a proxy and enable them
-        $proxyManager->addProxy('Queue', 'XStatic\Test\Fixture\QueueProxy');
+        $proxyManager->addProxy('Queue', 'ReStatic\Test\Fixture\QueueProxy');
         $enabled = $proxyManager->enable();
         $this->assertTrue($enabled);
 

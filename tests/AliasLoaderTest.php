@@ -1,11 +1,11 @@
 <?php
 
-namespace XStatic\Test;
+namespace ReStatic\Test;
 
-use XStatic\AliasLoader;
+use ReStatic\AliasLoader;
 
 /**
- * @covers \XStatic\AliasLoader
+ * @covers \ReStatic\AliasLoader
  */
 class AliasLoaderTest extends \PHPUnit_Framework_TestCase
 {

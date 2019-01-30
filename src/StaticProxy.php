@@ -1,6 +1,6 @@
 <?php
 
-namespace XStatic;
+namespace ReStatic;
 
 use Psr\Container\ContainerInterface;
 

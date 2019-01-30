@@ -1,6 +1,6 @@
 <?php
 
-namespace XStatic;
+namespace ReStatic;
 
 class AliasLoader implements AliasLoaderInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace XStatic\Test\Fixture;
+namespace ReStatic\Test\Fixture;
 
 use Psr\Container\ContainerInterface;
 
