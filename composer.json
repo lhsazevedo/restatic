@@ -1,10 +1,14 @@
 {
-    "name": "jeremeamia/restatic",
-    "description": "Static interfaces without static pitfalls",
+    "name": "lhsazevedo/restatic",
+    "description": "Laravel like facades por PSR11 containers",
     "license": "MIT",
     "keywords": ["static", "static proxy", "proxy", "facade", "facades", "interface", "container", "service locator"],
     "authors": [
         {
+            "name": "Lucas H. Azevedo",
+            "email": "lhs_azevedo@hotmail.com",
+            "role": "Developer"
+        }, {
             "name": "Jeremy Lindblom",
             "email": "jeremeamia@gmail.com",
             "role": "Developer"
