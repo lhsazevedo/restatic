@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/lhsazevedo/restatic.svg?branch=master)](https://travis-ci.org/lhsazevedo/restatic)
 
 ReStatic is a PHP library for enabling *static proxy interfaces*—similar to Laravel 4 "Facades"—but with any
-PHP project. ReStatic was created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
+PHP project. ReStatic is based on the awesome package XStatic created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
 
 ### Introduction (Q&A)
 
@@ -152,13 +152,6 @@ stub objects put into the container.
   specify the Instance Identifier needed to get its Proxy Subject.
 * **Root Namespace** – The namespace that an *Alias* can be referenced in. This can be configured as the global
   namespace (default), a specific namespace, or *any* namespace (i.e., the Alias works from any namespace).
-
-## How it works
-
-The following diagram shows what happens when a Static Proxy is referenced, assuming it was previously added to the
-Proxy Manager.
-
-![ReStatic Diagram](https://dl.dropboxusercontent.com/u/687294/published/restatic-diagram.png)
 
 ## Inspiration
 
