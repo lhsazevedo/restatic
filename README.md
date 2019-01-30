@@ -1,9 +1,9 @@
-# XStatic
+# ReStatic
 
-[![License](https://poser.pugx.org/jeremeamia/xstatic/license.png)](https://packagist.org/packages/jeremeamia/xstatic) [![Latest Stable Version](https://poser.pugx.org/jeremeamia/xstatic/v/stable.png)](https://packagist.org/packages/jeremeamia/xstatic) [![Build Status](https://travis-ci.org/jeremeamia/xstatic.png)](https://travis-ci.org/jeremeamia/xstatic) [![Code Coverage](https://scrutinizer-ci.com/g/jeremeamia/xstatic/badges/coverage.png?s=8dc03c490e3c4e7c02ff0456c31a41aa66cb589a)](https://scrutinizer-ci.com/g/jeremeamia/xstatic/) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jeremeamia/xstatic/badges/quality-score.png?s=74a714f37287624679f53e501c92edd5b8f38fd7)](https://scrutinizer-ci.com/g/jeremeamia/xstatic/)
+[![Build Status](https://travis-ci.org/lhsazevedo/restatic.svg?branch=master)](https://travis-ci.org/lhsazevedo/restatic)
 
-XStatic is a PHP library for enabling *static proxy interfaces*—similar to Laravel 4 "Facades"—but with any
-PHP project. XStatic was created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
+ReStatic is a PHP library for enabling *static proxy interfaces*—similar to Laravel 4 "Facades"—but with any
+PHP project. ReStatic is based on the awesome package XStatic created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
 
 ### Introduction (Q&A)
 
@@ -29,19 +29,19 @@ instance stored in a service container. The static proxy is linked to the contai
 defining class aliases via PHP's `class_alias()` function, and the use of the magic `__callStatic()` method. We can
 thank [Taylor Otwell](https://twitter.com/taylorotwell) for developing this technique.
 
-> OK, then what is the point of XStatic?
+> OK, then what is the point of ReStatic?
 
-XStatic uses the same technique as Laravel's "facades" system, but provides two additional, but important, features:
+ReStatic uses the same technique as Laravel's "facades" system, but provides two additional, but important, features:
 
-1. **It works with any framework's service container** - XStatic relies on the `ContainerInterface` of the
-   [container-interop](https://github.com/container-interop/container-interop) project. You can use the [Acclimate
+1. **It works with any framework's service container** - ReStatic relies on the `ContainerInterface` of the
+   [PSR-11](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-11-container.md) standard. You can use the [Acclimate
    library](https://github.com/jeremeamia/acclimate-container) to adapt any third-party containers to the normalized
-   container interface that XStatic depends on.
-2. **It works within any namespace** - XStatic injects an autoloader onto the stack, so no matter what namespace or
-   scope you try to reference your aliased static proxy from, it will pass through the XStatic autoloader. You can
-   configure XStatic to create the aliases in the global namespace, the current namespace, or a specific namespace.
+   container interface that ReStatic depends on.
+2. **It works within any namespace** - ReStatic injects an autoloader onto the stack, so no matter what namespace or
+   scope you try to reference your aliased static proxy from, it will pass through the ReStatic autoloader. You can
+   configure ReStatic to create the aliases in the global namespace, the current namespace, or a specific namespace.
 
-> Oh, and why is it called XStatic?
+> Oh, and why is it called ReStatic?
 
 Two reasons:
 
@@ -52,7 +52,7 @@ Two reasons:
 
 ## Usage
 
-To show you how to use XStatic, I will show you a simple [Silex](http://silex.sensiolabs.org/) application.
+To show you how to use ReStatic, I will show you a simple [Silex](http://silex.sensiolabs.org/) application.
 
 Your application bootstrap:
 
@@ -63,7 +63,7 @@ Your application bootstrap:
 require 'vendor/autoload.php';
 
 use Acclimate\Container\ContainerAcclimator;
-use XStatic\ProxyManager;
+use ReStatic\ProxyManager;
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 
@@ -77,7 +77,7 @@ $app['db'] = function () {
 };
 $app->get('/', 'MyApp\Controller\Home::index'); // Routes "/" to a controller object
 
-// Setup and enable XStatic
+// Setup and enable ReStatic
 $acclimator = new ContainerAcclimator();
 $proxyManager = new ProxyManager($acclimator->acclimate($app));
 $proxyManager->addProxy('View', 'MyApp\Proxy\Twig');
@@ -93,7 +93,7 @@ Your Static Proxy classes:
 ```php
 namespace MyApp\Proxy
 {
-    use XStatic\StaticProxy;
+    use ReStatic\StaticProxy;
 
     class Pdo extends StaticProxy
     {
@@ -138,7 +138,7 @@ stub objects put into the container.
 
 *Static interfaces without the static pitfalls.*
 
-## XStatic Concepts
+## ReStatic Concepts
 
 * **Static Proxy** – Static class that proxies static method calls to instance methods on its *Proxy Subject*.
 * **Proxy Subject (Instance)** – An object instance, stored in a *Container*, that is linked to a *Static Proxy*.
@@ -147,18 +147,11 @@ stub objects put into the container.
 * **Alias Loader** – Maintainer of the associations between *Aliases* and *Static Proxies*. It is injected into the
   autoloader stack to handle Aliases as they are referenced.
 * **Container** – A IoC container (e.g., a Service Locator or DIC) that provides the *Proxy Subject* instances. It must
-  implement the container-interop project's `ContainerInterface`.
+  implement the PSR-11 stardard's `ContainerInterface`.
 * **Instance Identifier** – An identifier used to fetch a *Proxy Subject* from a *Container*. Each *Static Proxy* must
   specify the Instance Identifier needed to get its Proxy Subject.
 * **Root Namespace** – The namespace that an *Alias* can be referenced in. This can be configured as the global
   namespace (default), a specific namespace, or *any* namespace (i.e., the Alias works from any namespace).
-
-## How it works
-
-The following diagram shows what happens when a Static Proxy is referenced, assuming it was previously added to the
-Proxy Manager.
-
-![XStatic Diagram](https://dl.dropboxusercontent.com/u/687294/published/xstatic-diagram.png)
 
 ## Inspiration
 

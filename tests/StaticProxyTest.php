@@ -1,12 +1,12 @@
 <?php
 
-namespace XStatic\Test;
+namespace ReStatic\Test;
 
-use XStatic\StaticProxy;
-use XStatic\Test\Fixture\QueueProxy;
+use ReStatic\StaticProxy;
+use ReStatic\Test\Fixture\QueueProxy;
 
 /**
- * @covers \XStatic\StaticProxy
+ * @covers \ReStatic\StaticProxy
  *
  */
 class StaticProxyTest extends \PHPUnit_Framework_TestCase
@@ -24,7 +24,7 @@ class StaticProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testErrorWhenContainerNotSet()
     {
-        $rc = new \ReflectionClass('XStatic\StaticProxy');
+        $rc = new \ReflectionClass('ReStatic\StaticProxy');
         $rp = $rc->getProperty('container');
         $rp->setAccessible(true);
         $rp->setValue(null, null);
@@ -39,7 +39,7 @@ class StaticProxyTest extends \PHPUnit_Framework_TestCase
         QueueProxy::setContainer($container);
         $this->assertSame(
             $container,
-            $this->readAttribute('XStatic\Test\Fixture\QueueProxy', 'container')
+            $this->readAttribute('ReStatic\Test\Fixture\QueueProxy', 'container')
         );
         $this->assertEquals('queue', QueueProxy::getInstanceIdentifier());
         $this->assertTrue(QueueProxy::isEmpty());

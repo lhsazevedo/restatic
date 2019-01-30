@@ -1,8 +1,8 @@
 <?php
 
-namespace XStatic\Test\Fixture;
+namespace ReStatic\Test\Fixture;
 
-use XStatic\StaticProxy;
+use ReStatic\StaticProxy;
 
 /**
  * @method static \SplQueue getInstance()

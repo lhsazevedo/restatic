@@ -1,6 +1,6 @@
 <?php
 
-namespace XStatic;
+namespace ReStatic;
 
 /**
  * An Alias Loader is registered as an autoloader, and creates class aliases based on the aliases added to the loader
