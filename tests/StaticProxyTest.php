@@ -35,7 +35,7 @@ class StaticProxyTest extends TestCase
 
     public function testCanSetAndUseContainer()
     {
-        $queue = new \SplQueue;
+        $queue = new \SplQueue();
         $container = new Fixture\Container(array('queue' => $queue));
         QueueProxy::setContainer($container);
         $this->assertTrue(QueueProxy::isEmpty());

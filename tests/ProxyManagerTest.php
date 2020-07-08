@@ -16,7 +16,7 @@ class ProxyManagerTest extends TestCase
         // Instantiate ReStatic and use setContainer
         $container = $this->createContainerMock();
         $proxyManager = new ProxyManager($container);
-        $proxyManager->setContainer(new Fixture\Container(array('queue' => new \SplQueue)));
+        $proxyManager->setContainer(new Fixture\Container(array('queue' => new \SplQueue())));
 
         // Register a proxy and enable them
         $proxyManager->addProxy('Queue', Fixture\QueueProxy::class);

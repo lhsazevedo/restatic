@@ -42,11 +42,11 @@ class AliasLoaderTest extends TestCase
         $loader->addAlias('alias_foo', Foo::class);
         $loader->load(Foo::class);
 
-        $foo = new \alias_foo;
+        $foo = new \alias_foo();
         $this->assertInstanceOf(Foo::class, $foo);
     }
 
-    protected function isAliasLoader(Callable $callable): bool
+    protected function isAliasLoader(callable $callable): bool
     {
         if (! is_array($callable)) {
             return false;
@@ -91,6 +91,7 @@ class AliasLoaderTest extends TestCase
     }
 }
 
-class Foo {
+class Foo
+{
     //
 }
