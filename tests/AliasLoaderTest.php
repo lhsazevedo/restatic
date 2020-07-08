@@ -3,66 +3,94 @@
 namespace ReStatic\Test;
 
 use ReStatic\AliasLoader;
+use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 
 /**
  * @covers \ReStatic\AliasLoader
  */
-class AliasLoaderTest extends \PHPUnit_Framework_TestCase
+class AliasLoaderTest extends TestCase
 {
-    public function testCanAddAliases()
-    {
-        $loader = new AliasLoader();
-
-        // Starts out empty
-        $this->assertEquals(array(), $this->readAttribute($loader, 'aliases'));
-
-        // Internal array should contain added aliases
-        $result = $loader->addAlias('Foo', 'Fake\Foo');
-        $this->assertSame($loader, $result);
-        $this->assertEquals(
-            array('Foo' => 'Fake\Foo'),
-            $this->readAttribute($loader, 'aliases')
-        );
-
-        // Shouldn't be able to add the same alias again
-        $this->setExpectedException('RuntimeException');
-        $loader->addAlias('Foo', 'Fake\Bar');
-    }
-
     public function testCanRegisterLoader()
     {
         $loader = new AliasLoader();
 
-        // Loader should not be registered
         $this->assertFalse($loader->isRegistered());
 
-        // Register the loader and check that it worked
-        $this->assertTrue($loader->register('Fake\Foo'));
-        $this->assertTrue($loader->isRegistered());
-        $this->assertTrue($this->verifyAutoloader($loader));
+        $loader->register('Fake\Foo');
 
-        // Registering the Autoloader is idempotent
-        $this->assertTrue($loader->register('Fake\Foo'));
-        $this->assertTrue($this->verifyAutoloader($loader));
+        $this->assertTrue($loader->isRegistered());
+        $this->assertFirstLoader($loader);
+    }
+
+    public function testRegisteringIsIdempotent()
+    {
+        $loader = new AliasLoader();
+        
+        $this->assertFalse($loader->isRegistered());
+
+        $loader->register();
+        $loader->register();
+
+        $this->assertOneLoader();
     }
 
     public function testCanCreateClassAliasesWithTheLoader()
     {
         $loader = new AliasLoader();
-        $loader->addAlias('Foo', __CLASS__);
-        $loader->load('Fake\Foo');
-        $this->assertTrue(class_exists('Foo'));
+        $loader->register();
+        $loader->addAlias('alias_foo', Foo::class);
+        $loader->load(Foo::class);
+
+        $foo = new \alias_foo;
+        $this->assertInstanceOf(Foo::class, $foo);
     }
 
-    private function verifyAutoloader(AliasLoader $loader)
+    protected function isAliasLoader(Callable $callable): bool
     {
-        $autoloaders = spl_autoload_functions();
-        $topLoader = end($autoloaders);
-        if (is_array($topLoader)) {
-            list($object, $method) = $topLoader;
-            return ($object === $loader && $method === 'load');
-        } else {
+        if (! is_array($callable)) {
             return false;
         }
+
+        [$object, $method] = $callable;
+
+        return $object instanceof AliasLoader && $method === 'load';
     }
+
+    protected function assertOneLoader()
+    {
+        $autoloaders = spl_autoload_functions();
+
+        $aliasLoaders = array_filter($autoloaders, [$this, 'isAliasLoader']);
+
+        $this->assertCount(1, $aliasLoaders);
+    }
+
+    protected function tearDown(): void
+    {
+        $loaders = spl_autoload_functions();
+
+        foreach ($loaders as $loader) {
+            if ($this->isAliasLoader($loader)) {
+                spl_autoload_unregister($loader);
+            }
+        }
+    }
+
+    private function assertFirstLoader(AliasLoader $loader)
+    {
+        $autoloaders = spl_autoload_functions();
+        $firstLoader = $autoloaders[0];
+
+        $this->assertIsArray($firstLoader);
+
+        [$object, $method] = $firstLoader;
+
+        $this->assertEquals($loader, $object);
+        $this->assertEquals('load', $method);
+    }
+}
+
+class Foo {
+    //
 }

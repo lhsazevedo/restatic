@@ -2,32 +2,33 @@
 
 namespace ReStatic\Test;
 
+use BadMethodCallException;
+use PHPUnit\Framework\TestCase;
 use ReStatic\StaticProxy;
 use ReStatic\Test\Fixture\QueueProxy;
+use RuntimeException;
 
 /**
  * @covers \ReStatic\StaticProxy
  *
  */
-class StaticProxyTest extends \PHPUnit_Framework_TestCase
+class StaticProxyTest extends TestCase
 {
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testErrorWhenUsingBaseClassDirectly()
     {
+        $this->expectException(BadMethodCallException::class);
+
         StaticProxy::getInstanceIdentifier();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testErrorWhenContainerNotSet()
     {
-        $rc = new \ReflectionClass('ReStatic\StaticProxy');
+        $rc = new \ReflectionClass(StaticProxy::class);
         $rp = $rc->getProperty('container');
         $rp->setAccessible(true);
         $rp->setValue(null, null);
+
+        $this->expectException(RuntimeException::class);
 
         QueueProxy::getInstance();
     }
@@ -37,11 +38,6 @@ class StaticProxyTest extends \PHPUnit_Framework_TestCase
         $queue = new \SplQueue;
         $container = new Fixture\Container(array('queue' => $queue));
         QueueProxy::setContainer($container);
-        $this->assertSame(
-            $container,
-            $this->readAttribute('ReStatic\Test\Fixture\QueueProxy', 'container')
-        );
-        $this->assertEquals('queue', QueueProxy::getInstanceIdentifier());
         $this->assertTrue(QueueProxy::isEmpty());
     }
 }

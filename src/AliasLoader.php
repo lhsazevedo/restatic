@@ -77,6 +77,6 @@ class AliasLoader implements AliasLoaderInterface
         }
 
         // Register the `load()` method of this object as an autoloader
-        return $this->isRegistered = spl_autoload_register(array($this, 'load'));
+        return $this->isRegistered = spl_autoload_register(array($this, 'load'), true, true);
     }
 }
