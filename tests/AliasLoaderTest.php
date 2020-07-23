@@ -8,6 +8,7 @@ use ReflectionObject;
 
 /**
  * @covers \ReStatic\AliasLoader
+ * @runTestsInSeparateProcesses
  */
 class AliasLoaderTest extends TestCase
 {
@@ -64,17 +65,6 @@ class AliasLoaderTest extends TestCase
         $aliasLoaders = array_filter($autoloaders, [$this, 'isAliasLoader']);
 
         $this->assertCount(1, $aliasLoaders);
-    }
-
-    protected function tearDown(): void
-    {
-        $loaders = spl_autoload_functions();
-
-        foreach ($loaders as $loader) {
-            if ($this->isAliasLoader($loader)) {
-                spl_autoload_unregister($loader);
-            }
-        }
     }
 
     private function assertFirstLoader(AliasLoader $loader)
