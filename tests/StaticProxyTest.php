@@ -1,11 +1,11 @@
 <?php
 
-namespace ReStatic\Test;
+namespace Tests;
 
 use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use ReStatic\StaticProxy;
-use ReStatic\Test\Fixture\QueueProxy;
+use Tests\Fixture\QueueProxy;
 use RuntimeException;
 
 /**

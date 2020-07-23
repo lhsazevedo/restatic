@@ -26,5 +26,10 @@
         "psr-4": {
             "ReStatic\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
 }

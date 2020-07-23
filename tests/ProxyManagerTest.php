@@ -1,6 +1,6 @@
 <?php
 
-namespace ReStatic\Test;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;

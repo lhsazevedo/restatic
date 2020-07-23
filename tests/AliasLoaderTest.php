@@ -1,6 +1,6 @@
 <?php
 
-namespace ReStatic\Test;
+namespace Tests;
 
 use ReStatic\AliasLoader;
 use PHPUnit\Framework\TestCase;

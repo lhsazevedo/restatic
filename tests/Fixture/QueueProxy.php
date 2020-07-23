@@ -1,6 +1,6 @@
 <?php
 
-namespace ReStatic\Test\Fixture;
+namespace Tests\Fixture;
 
 use ReStatic\StaticProxy;
 
