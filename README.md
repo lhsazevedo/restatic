@@ -2,10 +2,114 @@
 
 [![Build Status](https://travis-ci.org/lhsazevedo/restatic.svg?branch=master)](https://travis-ci.org/lhsazevedo/restatic)
 
-ReStatic is a PHP library for enabling *static proxy interfaces*—similar to Laravel 4 "Facades"—but with any
-PHP project. ReStatic is based on the awesome package XStatic created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
+Laravel like Facades (static proxies) for PSR11 containers.
 
-### Introduction (Q&A)
+
+```php
+class HomeController
+{
+    public function __invoke()
+    {
+        // It just works!
+        return View::render('home.index', [
+            'articles' => DB::query('SELECT * FROM articles')
+        ]);
+    }
+}
+```
+
+## Usage
+
+I will show you a simple [Slim](https://slimframework.com/) application.
+
+Your application bootstrap:
+
+```php
+<?php
+
+use App\Controllers\HomeController;
+use App\Facades\DB;
+use App\Facades\View;
+use ReStatic\ProxyManager;
+use Slim\Factory\AppFactory;
+use Twig\Environment as TwigEnvironment;
+use Twig\Loader\FilesystemLoader as TwigFilesystemLoader;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+// Setup Container
+$container = new \DI\Container();
+$container->set('db', function () {
+    return new PDO('mysql:dbname=testdb;host=127.0.0.1', 'dbuser', 'dbpass');
+});
+$cointainer->set('view', function () {
+    $loader = new TwigFilesystemLoader('/path/to/templates');
+    return new TwigEnvironment($loader);
+})
+
+// Setup Facades
+$proxyManager = new ProxyManager($container);
+$proxyManager->addProxy('DB', DB::class);
+$proxyManager->addProxy('View', View::class);
+$proxyManager->enable(ProxyManager::ROOT_NAMESPACE_ANY);
+
+// Create App
+AppFactory::setContainer($container);
+$app = AppFactory::create();
+
+$app->get('/', HomeController::class);
+
+$app->run();
+```
+
+Your Static Proxy classes:
+
+```php
+// app/Facades/View.php
+class View extends StaticProxy
+{
+    public static function getInstanceIdentifier()
+    {
+        return 'view';
+    }
+}
+
+// app/Facades/DB.php
+class DB extends StaticProxy
+{
+    public static function getInstanceIdentifier()
+    {
+        return 'db';
+    }
+}
+```
+
+Your controller class:
+
+```php
+<?php
+
+namespace App\Controllers;
+
+class HomeController
+{
+    public function __invoke()
+    {
+        $articles = DB::query('SELECT * FROM articles');
+    }
+}
+```
+
+Pretty cool, huh? Some interesting things to note about this example is that we've actually hidden the fact that we are
+using PDO and Twig from the controller. We could easily swap something else in that uses the same interfaces, and the
+controller code would not need to be altered. All we would need to do is put different objects into the application
+container. In fact, that is *exactly* how testing the controller would work. The test could be bootstrapped with mock or
+stub objects put into the container.
+
+*Static interfaces without the static pitfalls.*
+
+
+### FAQ
 
 > Facades? Static Proxies? Isn't using static methods considered a bad practice?
 
@@ -41,103 +145,6 @@ ReStatic uses the same technique as Laravel's "facades" system, but provides two
    scope you try to reference your aliased static proxy from, it will pass through the ReStatic autoloader. You can
    configure ReStatic to create the aliases in the global namespace, the current namespace, or a specific namespace.
 
-> Oh, and why is it called ReStatic?
-
-Two reasons:
-
-1. It **removes the static-ness** of making static method invocations, since the method calls are proxied to actual
-   object instances. Potential tagline: *"Static interfaces without the static pitfalls"*.
-2. It is pronounced like the word "ecstatic", because it is meant to provide developers (some of them at least) with
-   a sense of joy.
-
-## Usage
-
-To show you how to use ReStatic, I will show you a simple [Silex](http://silex.sensiolabs.org/) application.
-
-Your application bootstrap:
-
-```php
-<?php
-
-// Include the Composer autoloader, of course
-require 'vendor/autoload.php';
-
-use Acclimate\Container\ContainerAcclimator;
-use ReStatic\ProxyManager;
-use Silex\Application;
-use Silex\Provider\TwigServiceProvider;
-
-// Setup your Silex app/container
-$app = new Application;
-$app->register(new TwigServiceProvider, array(
-    'twig.path' => __DIR__ . '/templates',
-));
-$app['db'] = function () {
-    return new PDO('mysql:dbname=testdb;host=127.0.0.1', 'dbuser', 'dbpass');
-};
-$app->get('/', 'MyApp\Controller\Home::index'); // Routes "/" to a controller object
-
-// Setup and enable ReStatic
-$acclimator = new ContainerAcclimator();
-$proxyManager = new ProxyManager($acclimator->acclimate($app));
-$proxyManager->addProxy('View', 'MyApp\Proxy\Twig');
-$proxyManager->addProxy('DB', 'MyApp\Proxy\Pdo');
-$proxyManager->enable(ProxyManager::ROOT_NAMESPACE_ANY);
-
-// Run the app
-$app->run();
-```
-
-Your Static Proxy classes:
-
-```php
-namespace MyApp\Proxy
-{
-    use ReStatic\StaticProxy;
-
-    class Pdo extends StaticProxy
-    {
-        public static function getInstanceIdentifier()
-        {
-            return 'db';
-        }
-    }
-
-    class Twig extends StaticProxy
-    {
-        public static function getInstanceIdentifier()
-        {
-            return 'twig';
-        }
-    }
-}
-```
-
-Your controller class:
-
-```php
-namespace MyApp\Controller;
-
-class Home
-{
-    public function index()
-    {
-        // It just works!
-        View::render('home.index', array(
-            'articles' => DB::query('SELECT * FROM articles')
-        );
-    }
-}
-```
-
-Pretty cool, huh? Some interesting things to note about this example is that we've actually hidden the fact that we are
-using PDO and Twig from the controller. We could easily swap something else in that uses the same interfaces, and the
-controller code would not need to be altered. All we would need to do is put different objects into the application
-container. In fact, that is *exactly* how testing the controller would work. The test could be bootstrapped with mock or
-stub objects put into the container.
-
-*Static interfaces without the static pitfalls.*
-
 ## ReStatic Concepts
 
 * **Static Proxy** – Static class that proxies static method calls to instance methods on its *Proxy Subject*.
@@ -155,8 +162,7 @@ stub objects put into the container.
 
 ## Inspiration
 
-This library is heavily inspired by the [Facades](http://laravel.com/docs/facades) system in the
-[Laravel 4 Framework](http://laravel.com/).
+ReStatic is based on the awesome package XStatic created by [Jeremy Lindblom](https://twitter.com/jeremeamia).
 
 ## Disclaimer
 
