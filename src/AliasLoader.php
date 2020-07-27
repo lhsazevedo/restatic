@@ -27,7 +27,7 @@ class AliasLoader implements AliasLoaderInterface
         $this->aliases = $aliases;
     }
 
-    public function addAlias($alias, $fqcn): self
+    public function addAlias(string $alias, string $fqcn)
     {
         // Ensure aliases are only added once
         if (isset($this->aliases[$alias])) {

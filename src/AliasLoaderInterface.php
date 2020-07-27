@@ -14,8 +14,10 @@ interface AliasLoaderInterface
      * @param $fqcn  FQCN of the class
      *
      * @throws \RuntimeException if the alias has already been added
+     * 
+     * @return $this
      */
-    public function addAlias(string $alias, string $fqcn): self;
+    public function addAlias(string $alias, string $fqcn);
 
     /**
      * Checks if the the Alias Loader has already been registered
