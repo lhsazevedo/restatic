@@ -24,8 +24,8 @@ class ProxyManager
     private $aliasLoader;
 
     /**
-     * @param ContainerInterface   $container   Container that holds the actual instances
-     * @param AliasLoaderInterface $aliasLoader Alias Loader object that stores and resolves
+     * @param $container   Container that holds the actual instances
+     * @param $aliasLoader Alias Loader object that stores and resolves
      */
     public function __construct(ContainerInterface $container, AliasLoaderInterface $aliasLoader = null)
     {
@@ -38,10 +38,9 @@ class ProxyManager
      *
      * @param bool|string $rootNamespace The namespace that the alias should be created in
      *
-     * @return bool
      * @see \ReStatic\AliasLoaderInterface::register()
      */
-    public function enable($rootNamespace = self::ROOT_NAMESPACE_GLOBAL)
+    public function enable($rootNamespace = self::ROOT_NAMESPACE_GLOBAL): bool
     {
         // If ReStatic is already enabled, this is a no-op
         if ($this->aliasLoader->isRegistered()) {
@@ -59,12 +58,10 @@ class ProxyManager
     /**
      * Adds a Static Proxy class by delegating to the Alias Loader
      *
-     * @param string $alias     Alias to associate with the Static Proxy class
-     * @param string $proxyFqcn FQCN of the Static Proxy class
-     *
-     * @return $this
+     * @param $alias     Alias to associate with the Static Proxy class
+     * @param $proxyFqcn FQCN of the Static Proxy class
      */
-    public function addProxy($alias, $proxyFqcn)
+    public function addProxy(string $alias, string $proxyFqcn): self
     {
         $this->aliasLoader->addAlias($alias, $proxyFqcn);
 
@@ -74,11 +71,9 @@ class ProxyManager
     /**
      * Sets the Container object that provides the actual subjects' instances
      *
-     * @param ContainerInterface $container Instance of a Container (or Service Locator)
-     *
-     * @return $this
+     * @param $container Instance of a Container (or Service Locator)
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container): self
     {
         $this->container = $container;
         StaticProxy::setContainer($this->container);

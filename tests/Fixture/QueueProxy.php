@@ -9,7 +9,7 @@ use ReStatic\StaticProxy;
  */
 class QueueProxy extends StaticProxy
 {
-    public static function getInstanceIdentifier()
+    public static function getInstanceIdentifier(): string
     {
         return 'queue';
     }

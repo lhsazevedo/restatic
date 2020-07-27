@@ -18,7 +18,7 @@ abstract class StaticProxy
     /**
      * Sets the Container that will be used to retrieve the Proxy Subject
      *
-     * @param ContainerInterface $container The Container that provides the real Proxy Subject
+     * @param $container The Container that provides the real Proxy Subject
      *
      * @return mixed
      */
@@ -45,10 +45,9 @@ abstract class StaticProxy
     /**
      * Retrieves the Instance Identifier that is used to retrieve the Proxy Subject from the Container
      *
-     * @return string
      * @throws \BadMethodCallException if the method has not been implemented by a subclass
      */
-    public static function getInstanceIdentifier()
+    public static function getInstanceIdentifier(): string
     {
         throw new \BadMethodCallException('The' . __METHOD__ . ' method must be implemented by a subclass.');
     }
@@ -56,12 +55,9 @@ abstract class StaticProxy
     /**
      * Performs the proxying of the statically called method to the Proxy Subject in the Container
      *
-     * @param string $method
-     * @param array $args
-     *
      * @return mixed
      */
-    public static function __callStatic($method, $args)
+    public static function __callStatic(string $method, array $args)
     {
         return call_user_func_array(array(static::getInstance(), $method), $args);
     }

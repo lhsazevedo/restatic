@@ -10,27 +10,24 @@ interface AliasLoaderInterface
     /**
      * Creates an alias to a fully-qualified class name (FQCN)
      *
-     * @param string $alias Alias to associate with the class
-     * @param string $fqcn  FQCN of the class
+     * @param $alias Alias to associate with the class
+     * @param $fqcn  FQCN of the class
      *
-     * @return $this
      * @throws \RuntimeException if the alias has already been added
      */
-    public function addAlias($alias, $fqcn);
+    public function addAlias(string $alias, string $fqcn): self;
 
     /**
      * Checks if the the Alias Loader has already been registered
-     *
-     * @return bool
      */
-    public function isRegistered();
+    public function isRegistered(): bool;
 
     /**
      * Loads an alias by creating a class_alias() to the requested class. This is used as an autoload function
      *
-     * @param string $fqcn FQCN of the class to be loaded
+     * @param $fqcn FQCN of the class to be loaded
      */
-    public function load($fqcn);
+    public function load(string $fqcn): void;
 
     /**
      * Registers the Alias Loader as an autoloader so that aliases can be resolved via `class_alias()`
@@ -41,10 +38,10 @@ interface AliasLoaderInterface
      * - `false` - The alias will be created in the global namespace (default)
      * - `true` - The alias will be created in the namespace where it is referenced
      * - Any specific namespace (e.g., 'Foo\\Bar') - The alias is created in the specified namespace
+     * 
+     * Returns true if the registration was successful
      *
      * @param bool|string $rootNamespace Namespace where the alias should be created
-     *
-     * @return bool Returns true if the registration was successful
      */
-    public function register($rootNamespace = false);
+    public function register($rootNamespace = false): bool;
 }

@@ -27,7 +27,7 @@ class AliasLoader implements AliasLoaderInterface
         $this->aliases = $aliases;
     }
 
-    public function addAlias($alias, $fqcn)
+    public function addAlias($alias, $fqcn): self
     {
         // Ensure aliases are only added once
         if (isset($this->aliases[$alias])) {
@@ -39,12 +39,12 @@ class AliasLoader implements AliasLoaderInterface
         return $this;
     }
 
-    public function isRegistered()
+    public function isRegistered(): bool
     {
         return $this->isRegistered;
     }
 
-    public function load($fqcn)
+    public function load($fqcn): void
     {
         // Determine the alias and namespace from the requested class
         $alias = $fqcn;
@@ -64,7 +64,7 @@ class AliasLoader implements AliasLoaderInterface
         }
     }
 
-    public function register($rootNamespace = false)
+    public function register($rootNamespace = false): bool
     {
         // Do nothing if the Alias Loader is already registered
         if ($this->isRegistered) {
