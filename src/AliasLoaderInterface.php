@@ -38,7 +38,7 @@ interface AliasLoaderInterface
      * - `false` - The alias will be created in the global namespace (default)
      * - `true` - The alias will be created in the namespace where it is referenced
      * - Any specific namespace (e.g., 'Foo\\Bar') - The alias is created in the specified namespace
-     * 
+     *
      * Returns true if the registration was successful
      *
      * @param bool|string $rootNamespace Namespace where the alias should be created
