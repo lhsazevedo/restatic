@@ -95,7 +95,9 @@ class HomeController
 {
     public function __invoke()
     {
-        $articles = DB::query('SELECT * FROM articles');
+        return View::render('home.index', [
+            'articles' => DB::query('SELECT * FROM articles')
+        ]);
     }
 }
 ```
