@@ -59,7 +59,7 @@ class AliasLoaderTest extends TestCase
         $this->assertInstanceOf(Foo::class, new \Bar());
     }
 
-    public function testSameClassNameWithoutRootNamespacesLoadsProperly()
+    public function testSameClassNameWithoutRootNamespacesLoadsCorrectClass()
     {
         $loader = new AliasLoader();
         $loader->register();

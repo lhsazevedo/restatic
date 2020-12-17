@@ -72,8 +72,8 @@ class AliasLoader implements AliasLoaderInterface
             // Create the class alias if not already aliased
             if (!isset($this->aliased[$key = $namespace . $alias])) {
                 class_alias($this->aliases[$alias], $namespace . $alias);
+                $this->aliased[$key] = true;
             }
-            $this->aliased[$key] = true;
         }
     }
 
