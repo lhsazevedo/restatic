@@ -20,11 +20,6 @@ class AliasLoader implements AliasLoaderInterface
     private $isRegistered = false;
 
     /**
-     * @var bool Whether or not we are in our loader
-     */
-    private $loading = false;
-
-    /**
      * @var string Namespace that the alias should be created in
      */
     private $rootNamespace = false;
