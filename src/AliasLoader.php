@@ -10,9 +10,19 @@ class AliasLoader implements AliasLoaderInterface
     private $aliases;
 
     /**
+     * @var array List of created aliases
+     */
+    private $aliased = [];
+
+    /**
      * @var bool Whether or not the loader has been registered
      */
     private $isRegistered = false;
+
+    /**
+     * @var bool Whether or not we are in our loader
+     */
+    private $loading = false;
 
     /**
      * @var string Namespace that the alias should be created in
@@ -59,8 +69,11 @@ class AliasLoader implements AliasLoaderInterface
             // Determine what namespace the alias should be loaded into, depending on the root namespace
             $namespace = ($this->rootNamespace === true) ? $namespace : $this->rootNamespace;
 
-            // Create the class alias
-            class_alias($this->aliases[$alias], $namespace . $alias);
+            // Create the class alias if not already aliased
+            if (!isset($this->aliased[$key = $namespace . $alias])) {
+                class_alias($this->aliases[$alias], $namespace . $alias);
+            }
+            $this->aliased[$key] = true;
         }
     }
 
@@ -77,6 +90,6 @@ class AliasLoader implements AliasLoaderInterface
         }
 
         // Register the `load()` method of this object as an autoloader
-        return $this->isRegistered = spl_autoload_register(array($this, 'load'), true, true);
+        return $this->isRegistered = spl_autoload_register(array($this, 'load'), true);
     }
 }
