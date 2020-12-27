@@ -71,7 +71,7 @@ class AliasLoaderTest extends TestCase
         $this->assertInstanceOf(Foo::class, new \Bar());
 
         $this->expectException(\Error::class);
-        $this->expectExceptionMessageMatches("/Class ['\"]Tests\\Bar['\"'] not found/");
+        $this->expectExceptionMessageMatches("/Class ['\"]Tests\\\Bar['\"] not found/");
         new Bar();
     }
 
