@@ -21,13 +21,12 @@ class AliasLoaderTest extends TestCase
         $loader->register('Fake\Foo');
 
         $this->assertTrue($loader->isRegistered());
-        $this->assertFirstLoader($loader);
     }
 
     public function testRegisteringIsIdempotent()
     {
         $loader = new AliasLoader();
-        
+
         $this->assertFalse($loader->isRegistered());
 
         $loader->register();
@@ -45,6 +44,46 @@ class AliasLoaderTest extends TestCase
 
         $foo = new \alias_foo();
         $this->assertInstanceOf(Foo::class, $foo);
+    }
+
+    public function testSameClassNameWithRootNamespacesLoadsCorrectClass()
+    {
+        $loader = new AliasLoader();
+        $loader->register(true);
+        $loader->addAlias('Bar', Foo::class);
+
+        $this->assertNotInstanceOf(Foo::class, $bar = new Fixture\Bar());
+        $this->assertTrue($bar->notFoo); // double check
+
+        $this->assertInstanceOf(Foo::class, new Bar());
+        $this->assertInstanceOf(Foo::class, new \Bar());
+    }
+
+    public function testSameClassNameWithoutRootNamespacesLoadsCorrectClass()
+    {
+        $loader = new AliasLoader();
+        $loader->register();
+        $loader->addAlias('Bar', Foo::class);
+
+        $this->assertNotInstanceOf(Foo::class, $bar = new Fixture\Bar());
+        $this->assertTrue($bar->notFoo); // double check
+
+        $this->assertInstanceOf(Foo::class, new \Bar());
+
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage("Class 'Tests\\Bar' not found");
+        new Bar();
+    }
+
+    public function testAliasesCanOnlyBeRegisteredOnce()
+    {
+        $loader = new AliasLoader();
+        $loader->addAlias('test', 'test');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("The alias, test, has already been added and cannot be modified.");
+
+        $loader->addAlias('test', 'test');
     }
 
     protected function isAliasLoader(callable $callable): bool
@@ -65,19 +104,6 @@ class AliasLoaderTest extends TestCase
         $aliasLoaders = array_filter($autoloaders, [$this, 'isAliasLoader']);
 
         $this->assertCount(1, $aliasLoaders);
-    }
-
-    private function assertFirstLoader(AliasLoader $loader)
-    {
-        $autoloaders = spl_autoload_functions();
-        $firstLoader = $autoloaders[0];
-
-        $this->assertIsArray($firstLoader);
-
-        [$object, $method] = $firstLoader;
-
-        $this->assertEquals($loader, $object);
-        $this->assertEquals('load', $method);
     }
 }
 
